@@ -46,7 +46,12 @@ func (l *Logger) Start(config *viper.Viper) error {
 		}
 		l.Log(msg.Topic + ": " + string(msg.Payload))
 	}
-	client, err := mqtt.NewClient("tcp://127.0.0.1:1883")
+	var userString string
+	if config.IsSet("MQTT.User") {
+		userString = config.GetString("MQTT.User") + ":" +
+			config.GetString("MQTT.Pass") + "@"
+	}
+	client, err := mqtt.NewClient("tcp://" + userString + "127.0.0.1:1883")
 	if err != nil {
 		return err
 	}
